@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -28,15 +28,13 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { formService } from '../services/formService';
-import { Form } from '../types';
 
-const DashboardPage: React.FC = () => {
-  const [forms, setForms] = useState<Form[]>([]);
+const DashboardPage = () => {
+  const [forms, setForms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchForms = async () => {
@@ -53,7 +51,7 @@ const DashboardPage: React.FC = () => {
     fetchForms();
   }, [search]);
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -66,7 +64,7 @@ const DashboardPage: React.FC = () => {
     handleMenuClose();
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case 'draft': return 'default';
       case 'active': return 'success';
@@ -174,7 +172,7 @@ const DashboardPage: React.FC = () => {
                     <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
                       <Chip
                         label={form.status}
-                        color={getStatusColor(form.status) as any}
+                        color={getStatusColor(form.status)}
                         size="small"
                       />
                       <Typography variant="body2" color="text.secondary">

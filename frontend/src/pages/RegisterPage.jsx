@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 
-const RegisterPage: React.FC = () => {
+const RegisterPage = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -28,14 +28,14 @@ const RegisterPage: React.FC = () => {
     return <Navigate to="/dashboard" replace />;
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -47,7 +47,7 @@ const RegisterPage: React.FC = () => {
     try {
       const { confirmPassword, ...registerData } = formData;
       await register(registerData);
-    } catch (err: any) {
+    } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     }
   };
