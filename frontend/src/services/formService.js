@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Form } from '../types';
 
 const FORM_SERVICE_URL = process.env.REACT_APP_FORM_SERVICE_URL || 'http://localhost:3002';
 
@@ -23,32 +22,32 @@ formApi.interceptors.request.use(
 );
 
 export const formService = {
-  async getForms(params?: { page?: number; limit?: number; status?: string; search?: string }) {
+  async getForms(params) {
     const response = await formApi.get('/api/forms', { params });
     return response.data;
   },
 
-  async getForm(id: string): Promise<{ form: Form }> {
+  async getForm(id) {
     const response = await formApi.get(`/api/forms/${id}`);
     return response.data;
   },
 
-  async createForm(data: Partial<Form>) {
+  async createForm(data) {
     const response = await formApi.post('/api/forms', data);
     return response.data;
   },
 
-  async updateForm(id: string, data: Partial<Form>) {
+  async updateForm(id, data) {
     const response = await formApi.put(`/api/forms/${id}`, data);
     return response.data;
   },
 
-  async deleteForm(id: string) {
+  async deleteForm(id) {
     const response = await formApi.delete(`/api/forms/${id}`);
     return response.data;
   },
 
-  async addCollaborator(formId: string, userId: string, role: string) {
+  async addCollaborator(formId, userId, role) {
     const response = await formApi.post(`/api/forms/${formId}/collaborators`, { userId, role });
     return response.data;
   }
