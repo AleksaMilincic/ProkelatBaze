@@ -10,6 +10,7 @@ import DashboardPage from './pages/DashboardPage';
 import FormEditorPage from './pages/FormEditorPage';
 import FormViewPage from './pages/FormViewPage';
 import ResponsesPage from './pages/ResponsesPage';
+import DemoFormEditor from './components/DemoFormEditor';
 
 const theme = createTheme({
   palette: {
@@ -31,6 +32,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/demo" element={<DemoFormEditor />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <DashboardPage />
