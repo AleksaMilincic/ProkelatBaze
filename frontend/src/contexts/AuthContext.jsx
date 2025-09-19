@@ -1,23 +1,9 @@
-import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
-import { User, AuthState } from '../types';
+import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { authService } from '../services/authService';
 
-interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<void>;
-  register: (data: any) => Promise<void>;
-  logout: () => void;
-  updateUser: (user: User) => void;
-}
+const AuthContext = createContext(undefined);
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-type AuthAction =
-  | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'SET_USER'; payload: User }
-  | { type: 'SET_AUTH'; payload: { user: User; token: string } }
-  | { type: 'LOGOUT' };
-
-const authReducer = (state: AuthState, action: AuthAction): AuthState => {
+const authReducer = (state, action) => {
   switch (action.type) {
     case 'SET_LOADING':
       return { ...state, loading: action.payload };
@@ -43,18 +29,14 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 };
 
-const initialState: AuthState = {
+const initialState = {
   isAuthenticated: false,
   user: null,
   token: null,
   loading: true,
 };
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
@@ -76,7 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email, password) => {
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
       const { user, token } = await authService.login({ email, password });
@@ -87,7 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const register = async (data: any) => {
+  const register = async (data) => {
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
       const { user, token } = await authService.register(data);
@@ -103,11 +85,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: 'LOGOUT' });
   };
 
-  const updateUser = (user: User) => {
+  const updateUser = (user) => {
     dispatch({ type: 'SET_USER', payload: user });
   };
 
-  const value: AuthContextType = {
+  const value = {
     ...state,
     login,
     register,
@@ -118,7 +100,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');

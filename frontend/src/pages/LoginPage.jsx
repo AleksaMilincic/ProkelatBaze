@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 
-const LoginPage: React.FC = () => {
+const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -21,13 +21,13 @@ const LoginPage: React.FC = () => {
     return <Navigate to="/dashboard" replace />;
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     try {
       await login(email, password);
-    } catch (err: any) {
+    } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     }
   };
