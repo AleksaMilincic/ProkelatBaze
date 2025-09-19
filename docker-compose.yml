@@ -1,0 +1,131 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: prokelat-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - prokelat-network
+
+  # Auth Service
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    container_name: prokelat-auth-service
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/prokelat_auth?authSource=admin
+      JWT_SECRET: your_super_secure_jwt_secret_here_change_in_production
+      JWT_EXPIRES_IN: 24h
+      BCRYPT_ROUNDS: 12
+    depends_on:
+      - mongodb
+    networks:
+      - prokelat-network
+
+  # Form Service
+  form-service:
+    build:
+      context: ./services/form-service
+      dockerfile: Dockerfile
+    container_name: prokelat-form-service
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/prokelat_forms?authSource=admin
+      AUTH_SERVICE_URL: http://auth-service:3001
+    depends_on:
+      - mongodb
+      - auth-service
+    networks:
+      - prokelat-network
+
+  # Responses Service
+  responses-service:
+    build:
+      context: ./services/responses-service
+      dockerfile: Dockerfile
+    container_name: prokelat-responses-service
+    restart: unless-stopped
+    ports:
+      - "3003:3003"
+    environment:
+      NODE_ENV: production
+      PORT: 3003
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/prokelat_responses?authSource=admin
+      AUTH_SERVICE_URL: http://auth-service:3001
+      FORM_SERVICE_URL: http://form-service:3002
+    depends_on:
+      - mongodb
+      - auth-service
+      - form-service
+    networks:
+      - prokelat-network
+
+  # Collaboration Service
+  collaboration-service:
+    build:
+      context: ./services/collaboration-service
+      dockerfile: Dockerfile
+    container_name: prokelat-collaboration-service
+    restart: unless-stopped
+    ports:
+      - "3004:3004"
+    environment:
+      NODE_ENV: production
+      PORT: 3004
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/prokelat_collaboration?authSource=admin
+      AUTH_SERVICE_URL: http://auth-service:3001
+      FORM_SERVICE_URL: http://form-service:3002
+    depends_on:
+      - mongodb
+      - auth-service
+      - form-service
+    networks:
+      - prokelat-network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: prokelat-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_AUTH_SERVICE_URL: http://localhost:3001
+      REACT_APP_FORM_SERVICE_URL: http://localhost:3002
+      REACT_APP_RESPONSES_SERVICE_URL: http://localhost:3003
+      REACT_APP_COLLABORATION_SERVICE_URL: http://localhost:3004
+    depends_on:
+      - auth-service
+      - form-service
+      - responses-service
+      - collaboration-service
+    networks:
+      - prokelat-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  prokelat-network:
+    driver: bridge

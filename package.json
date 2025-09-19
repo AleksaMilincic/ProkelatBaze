@@ -1,0 +1,32 @@
+{
+  "name": "prokelat-baze-microservices",
+  "version": "1.0.0",
+  "description": "Microservices application with Auth, Form, Responses, and Collaboration services",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "npm run install:auth && npm run install:form && npm run install:responses && npm run install:collaboration && npm run install:frontend",
+    "install:auth": "cd services/auth-service && npm install",
+    "install:form": "cd services/form-service && npm install",
+    "install:responses": "cd services/responses-service && npm install",
+    "install:collaboration": "cd services/collaboration-service && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "start:auth": "cd services/auth-service && npm start",
+    "start:form": "cd services/form-service && npm start",
+    "start:responses": "cd services/responses-service && npm start",
+    "start:collaboration": "cd services/collaboration-service && npm start",
+    "start:frontend": "cd frontend && npm start",
+    "dev:auth": "cd services/auth-service && npm run dev",
+    "dev:form": "cd services/form-service && npm run dev",
+    "dev:responses": "cd services/responses-service && npm run dev",
+    "dev:collaboration": "cd services/collaboration-service && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev"
+  },
+  "keywords": ["microservices", "nodejs", "express", "react", "mongodb"],
+  "author": "",
+  "license": "MIT",
+  "workspaces": [
+    "services/*",
+    "frontend",
+    "shared"
+  ]
+}
