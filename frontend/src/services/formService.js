@@ -47,8 +47,33 @@ export const formService = {
     return response.data;
   },
 
+  async duplicateForm(id) {
+    const response = await formApi.post(`/api/forms/${id}/duplicate`);
+    return response.data;
+  },
+
+  async updateFormStatus(id, status) {
+    const response = await formApi.patch(`/api/forms/${id}/status`, { status });
+    return response.data;
+  },
+
+  async getFormAnalytics(id) {
+    const response = await formApi.get(`/api/forms/${id}/analytics`);
+    return response.data;
+  },
+
   async addCollaborator(formId, userId, role) {
     const response = await formApi.post(`/api/forms/${formId}/collaborators`, { userId, role });
+    return response.data;
+  },
+
+  async updateCollaborator(formId, userId, role) {
+    const response = await formApi.put(`/api/forms/${formId}/collaborators/${userId}`, { role });
+    return response.data;
+  },
+
+  async removeCollaborator(formId, userId) {
+    const response = await formApi.delete(`/api/forms/${formId}/collaborators/${userId}`);
     return response.data;
   }
 };
