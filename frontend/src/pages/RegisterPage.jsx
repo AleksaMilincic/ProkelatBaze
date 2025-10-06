@@ -155,6 +155,19 @@ const RegisterPage = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               disabled={loading}
+              onClick={(e) => {
+                // Ensure form submission is triggered for better compatibility
+                e.preventDefault();
+                if (!loading) {
+                  const form = e.target.closest('form');
+                  if (form) {
+                    // Trigger the form's submit handler
+                    const formData = new FormData(form);
+                    const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+                    form.dispatchEvent(submitEvent);
+                  }
+                }
+              }}
             >
               {loading ? 'Signing Up...' : 'Sign Up'}
             </Button>
